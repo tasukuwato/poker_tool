@@ -1,4 +1,6 @@
+// src/ParameterSettings.tsx
 import React, { useState } from 'react';
+import { calculateWinProbability } from './calculateWinProbability';
 
 const suits = ['♠', '♥', '♦', '♣'];
 const ranks = [
@@ -29,6 +31,10 @@ const ParameterSettings: React.FC = () => {
   const [position, setPosition] = useState(1);
   const [numPlayers, setNumPlayers] = useState(2);
   const [players, setPlayers] = useState<string[][]>([]);
+  const [myWinProbabilityPartial, setMyWinProbabilityPartial] = useState(0);
+  const [allPlayersWinProbabilityPartial, setAllPlayersWinProbabilityPartial] = useState<number[]>([]);
+  const [myWinProbabilityFull, setMyWinProbabilityFull] = useState(0);
+  const [allPlayersWinProbabilityFull, setAllPlayersWinProbabilityFull] = useState<number[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +51,19 @@ const ParameterSettings: React.FC = () => {
     }
 
     setPlayers(playerHands);
+
+    const remainingDeck = deck.filter(card => !playerHands.flat().includes(card));
+    const {
+      myWinProbabilityPartial,
+      allPlayersWinProbabilityPartial,
+      myWinProbabilityFull,
+      allPlayersWinProbabilityFull
+    } = calculateWinProbability(playerHands[0], numPlayers, playerHands, remainingDeck);
+
+    setMyWinProbabilityPartial(myWinProbabilityPartial);
+    setAllPlayersWinProbabilityPartial(allPlayersWinProbabilityPartial);
+    setMyWinProbabilityFull(myWinProbabilityFull);
+    setAllPlayersWinProbabilityFull(allPlayersWinProbabilityFull);
   };
 
   return (
@@ -99,6 +118,25 @@ const ParameterSettings: React.FC = () => {
         {players.map((hand, index) => (
           <div key={index}>
             {index === 0 ? 'You' : `Player ${index + 1}`}: {hand.join(', ')}
+          </div>
+        ))}
+      </div>
+      <div>
+        <h2>Win Probabilities</h2>
+        <div>
+          <strong>Your Hand (Partial Info):</strong> {myWinProbabilityPartial.toFixed(2)}%
+        </div>
+        {allPlayersWinProbabilityPartial.map((probability, index) => (
+          <div key={index}>
+            <strong>{index === 0 ? 'You' : `Player ${index + 1}`} (Partial Info):</strong> {probability.toFixed(2)}%
+          </div>
+        ))}
+        <div>
+          <strong>Your Hand (Full Info):</strong> {myWinProbabilityFull.toFixed(2)}%
+        </div>
+        {allPlayersWinProbabilityFull.map((probability, index) => (
+          <div key={index}>
+            <strong>{index === 0 ? 'You' : `Player ${index + 1}`} (Full Info):</strong> {probability.toFixed(2)}%
           </div>
         ))}
       </div>
