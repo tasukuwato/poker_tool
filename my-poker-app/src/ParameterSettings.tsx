@@ -124,19 +124,23 @@ const ParameterSettings: React.FC = () => {
       <div>
         <h2>Win Probabilities</h2>
         <div>
-          <strong>Your Hand (Partial Info):</strong> {myWinProbabilityPartial.toFixed(2)}%
-        </div>
-        {allPlayersWinProbabilityPartial.map((probability, index) => (
-          <div key={index}>
-            <strong>{index === 0 ? 'You' : `Player ${index + 1}`} (Partial Info):</strong> {probability.toFixed(2)}%
+          <strong>Your Hand:</strong>
+          <div>
+            Partial Info: {myWinProbabilityPartial.toFixed(2)}%
           </div>
-        ))}
-        <div>
-          <strong>Your Hand (Full Info):</strong> {myWinProbabilityFull.toFixed(2)}%
+          <div>
+            Full Info: {myWinProbabilityFull.toFixed(2)}%
+          </div>
         </div>
-        {allPlayersWinProbabilityFull.map((probability, index) => (
+        {allPlayersWinProbabilityPartial.map((probabilityPartial, index) => (
           <div key={index}>
-            <strong>{index === 0 ? 'You' : `Player ${index + 1}`} (Full Info):</strong> {probability.toFixed(2)}%
+            <strong>{index === 0 ? 'You' : `Player ${index + 1}`}:</strong>
+            <div>
+              Partial Info: {probabilityPartial.toFixed(2)}%
+            </div>
+            <div>
+              Full Info: {allPlayersWinProbabilityFull[index].toFixed(2)}%
+            </div>
           </div>
         ))}
       </div>
